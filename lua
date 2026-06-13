@@ -1,6 +1,3 @@
--- 🤖 DUPE SYSTEM - Final Fix: Dupes manatili pag TRADE, mawawala SABAY pag SOLD/DESTROYED
--- Clean Minimal UI + Green Button + Draggable + Close
-
 local Players = game:GetService("Players")
 local TweenService = game:GetService("TweenService")
 
@@ -8,22 +5,18 @@ local player = Players.LocalPlayer
 local backpack = player:WaitForChild("Backpack")
 local character = player.Character or player.CharacterAdded:Wait()
 
-local dupeRecords = setmetatable({}, {__mode = "k"})  -- weak keys auto-GC
+local dupeRecords = setmetatable({}, {__mode = "k"})
 
------------------------------------------------------------------
---                  UI (same as before, clean minimal)
------------------------------------------------------------------
 local ScreenGui = Instance.new("ScreenGui")
 ScreenGui.Name = "MinimalDupeUI"
 ScreenGui.Parent = game:GetService("CoreGui")
 ScreenGui.ResetOnSpawn = false
 
 local MainFrame = Instance.new("Frame")
-MainFrame.Size = UDim2.new(0, 280, 0, 140)
-MainFrame.Position = UDim2.new(0.5, -140, 0.5, -70)
+MainFrame.Size = UDim2.new(0, 300, 0, 150)
+MainFrame.Position = UDim2.new(0.5, -150, 0.5, -75)
 MainFrame.BackgroundColor3 = Color3.fromRGB(18, 18, 22)
 MainFrame.BorderSizePixel = 0
-MainFrame.ClipsDescendants = true
 MainFrame.Active = true
 MainFrame.Draggable = true
 MainFrame.Parent = ScreenGui
@@ -60,10 +53,12 @@ TitleBar.Parent = MainFrame
 
 local TitleCorner = Instance.new("UICorner")
 TitleCorner.CornerRadius = UDim.new(0, 16)
+UICorner.CornerRadius = UDim.new(0, 16)
 TitleCorner.Parent = TitleBar
 
+-- System text "🤖 DUPE SYSTEM"
 local Title = Instance.new("TextLabel")
-Title.Size = UDim2.new(1, -50, 1, 0)
+Title.Size = UDim2.new(1, -200, 1, 0)
 Title.Position = UDim2.new(0, 15, 0, 0)
 Title.BackgroundTransparency = 1
 Title.Font = Enum.Font.GothamBlack
@@ -73,6 +68,7 @@ Title.TextSize = 18
 Title.TextXAlignment = Enum.TextXAlignment.Left
 Title.Parent = TitleBar
 
+-- Green DUPE button
 local DupeButton = Instance.new("TextButton")
 DupeButton.Size = UDim2.new(0.88, 0, 0, 60)
 DupeButton.Position = UDim2.new(0.06, 0, 0, 60)
@@ -138,9 +134,20 @@ CloseBtn.MouseButton1Click:Connect(function()
     ScreenGui:Destroy()
 end)
 
------------------------------------------------------------------
---                  DUPE LOGIC - TRADE SAFE (dupes survive trade)
------------------------------------------------------------------
+-- "Made by Mark Dimple" nasa ilalim ng green button, nasa gitna
+local MadeByLabel = Instance.new("TextLabel")
+MadeByLabel.Size = UDim2.new(0, 150, 0, 20)
+MadeByLabel.Position = UDim2.new(0.5, -75, 0, 130) -- sa ilalim ng button, nasa gitna
+MadeByLabel.BackgroundTransparency = 1
+MadeByLabel.Font = Enum.Font.GothamBlack
+MadeByLabel.Text = "Made by Mark Dimple"
+MadeByLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+MadeByLabel.TextSize = 10
+MadeByLabel.TextWrapped = false
+MadeByLabel.TextXAlignment = Enum.TextXAlignment.Center
+MadeByLabel.Parent = MainFrame
+
+-- DUPE logic
 local function cleanupDupes(original)
     local clones = dupeRecords[original]
     if not clones then return end
@@ -171,7 +178,6 @@ local function duplicateItem()
     if not dupeRecords[tool] then
         dupeRecords[tool] = {}
 
-        -- Hook SA .Destroying LANG → ito nagti-trigger pag sold/deleted, HINDI sa trade
         local conn
         conn = tool.Destroying:Connect(function()
             conn:Disconnect()
